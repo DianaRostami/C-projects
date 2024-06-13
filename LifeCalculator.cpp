@@ -3,48 +3,57 @@
 
 using namespace std;
 
-// Function to calculate age
+// تابع برای محاسبه سن به روز
 void calculateAge(int birthYear, int birthMonth, int birthDay) {
-    // Get current time
     time_t now = time(0);
     tm *ltm = localtime(&now);
-    
-    // Calculate age
+
     int currentYear = 1900 + ltm->tm_year;
     int currentMonth = 1 + ltm->tm_mon;
     int currentDay = ltm->tm_mday;
-    
-    int ageYears = currentYear - birthYear;
-    int ageMonths = currentMonth - birthMonth;
-    int ageDays = currentDay - birthDay;
 
-    // Adjust age if birth month or day is later in the current month
-    if (ageDays < 0) {
-        ageMonths--;
-        ageDays += 30; // Assume each month has 30 days for simplicity
-    }
-    if (ageMonths < 0) {
-        ageYears--;
-        ageMonths += 12;
+    // محاسبه سن به روز
+    int ageInDays = 0;
+    while (birthYear < currentYear || birthMonth < currentMonth || birthDay < currentDay) {
+        ageInDays++;
+        birthDay++;
+
+        if ((birthMonth == 4 || birthMonth == 6 || birthMonth == 9 || birthMonth == 11) && birthDay == 31) {
+            birthMonth++;
+            birthDay = 1;
+        } else if (birthMonth == 2 && ((birthYear % 4 == 0 && birthDay == 30) || (birthYear % 4 != 0 && birthDay == 29))) {
+            birthMonth++;
+            birthDay = 1;
+        } else if (birthDay == 32) {
+            birthMonth++;
+            birthDay = 1;
+        }
+
+        if (birthMonth == 13) {
+            birthYear++;
+            birthMonth = 1;
+        }
     }
 
-    // Print age
-    cout << "Your age is: " << ageYears << " years, " << ageMonths << " months, and " << ageDays << " days." << endl;
+    // محاسبه مدت زمان گذشته به دقیقه و ثانیه
+    int ageInMinutes = ageInDays * 24 * 60;
+    int ageInSeconds = ageInMinutes * 60;
+
+    cout << "Your age in days is: " << ageInDays << endl;
+    cout << "Your age in minutes is: " << ageInMinutes << endl;
+    cout << "Your age in seconds is: " << ageInSeconds << endl;
 }
 
 int main() {
-    int year, month, day;
-    
-    // Get birthdate
+    int birthYear, birthMonth, birthDay;
     cout << "Enter your birth year: ";
-    cin >> year;
+    cin >> birthYear;
     cout << "Enter your birth month: ";
-    cin >> month;
+    cin >> birthMonth;
     cout << "Enter your birth day: ";
-    cin >> day;
+    cin >> birthDay;
 
-    // Calculate age
-    calculateAge(year, month, day);
+    calculateAge(birthYear, birthMonth, birthDay);
 
     return 0;
 }
